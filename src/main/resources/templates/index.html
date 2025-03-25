@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppMusic</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+<h1 th:text="'Benvenuto in AppMusic, ' + ${username} + '!'">Benvenuto in AppMusic!</h1>
+<p>La tua applicazione Spring Boot funziona su <strong>http://localhost:9999/</strong></p>
+<button type="button" onclick="openModal()">Accedi</button>
+
+<!-- Modale nascosta inizialmente -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Accedi</h2>
+        <label for="username">Username:</label>
+        <input type="text" id="username" placeholder="Inserisci username">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Inserisci password">
+
+        <button type="button" onclick="loginSpotify()">Login</button>
+    </div>
+</div>
+
+<script type="text/javascript" th:src="@{/js/index.js}"></script>
+</body>
+</html>
