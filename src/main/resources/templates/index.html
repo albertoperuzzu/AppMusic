@@ -16,23 +16,10 @@
 <body>
 <h1 th:text="'Benvenuto in AppMusic, ' + ${username} + '!'">Benvenuto in AppMusic!</h1>
 <p>La tua applicazione Spring Boot funziona su <strong>http://localhost:9999/</strong></p>
-<button type="button" onclick="openModal()">Accedi</button>
-
-<!-- Modale nascosta inizialmente -->
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2>Accedi</h2>
-        <label for="username">Username:</label>
-        <input type="text" id="username" placeholder="Inserisci username">
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Inserisci password">
-
-        <button type="button" onclick="loginSpotify()">Login</button>
-    </div>
-</div>
-
+<a id="spotifyLoginButton"
+   href="https://accounts.spotify.com/authorize?client_id=6b0c12d36953474181057af3eb7f3787&response_type=code&redirect_uri=http://localhost:9999/callback&scope=user-read-playback-state user-modify-playback-state">
+    Accedi con Spotify
+</a>
 <script type="text/javascript" th:src="@{/js/index.js}"></script>
 </body>
 </html>

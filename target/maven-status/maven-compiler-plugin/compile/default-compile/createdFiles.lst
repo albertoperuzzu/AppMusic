@@ -1,3 +1,4 @@
+com\music\project\service\SpotifyAuthService.class
 com\music\project\controller\HomeController.class
-com\music\project\controller\HelloController.class
+com\music\project\controller\AuthController.class
 com\music\project\Main.class
