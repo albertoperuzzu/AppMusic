@@ -1,0 +1,12 @@
+# File di build
+target/
+*.jar
+*.war
+*.class
+
+# Impostazioni dell'IDE
+.idea/
+*.iml
+
+# Dipendenze scaricate da Maven
+.mvn/
