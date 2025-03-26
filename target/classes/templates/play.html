@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppMusic</title>
+    <link rel="stylesheet" th:href="@{/css/play.css}" />
+</head>
+<body>
+    <h1>Spotify Player</h1>
+    <p>Stai ascoltando <strong><span th:text="${track}"></span></strong> di <strong><span th:text="${artist}"></span></strong></p>
+    <div class="btn-container">
+        <button class="spotify-btn" id="playBtn">
+            <i class="fas fa-play"></i> <span class="btn-text">Play</span>
+        </button>
+        <button class="spotify-btn" id="pauseBtn">
+            <i class="fas fa-pause"></i> <span class="btn-text">Pause</span>
+        </button>
+    </div>
+    <a th:href="${redirect}" class="spotify-btn" target="_blank">
+        Link per web scraping
+    </a>
+    <input type="hidden" id="spotifyToken" th:value="${accessToken}">
+    <script type="text/javascript" th:src="@{/js/play.js}"></script>
+</body>
+</html>

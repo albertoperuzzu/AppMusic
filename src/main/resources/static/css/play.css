@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #121212;
+    color: white;
+    margin-top: 50px;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    margin-bottom: 30px; /* Spazio extra sotto i bottoni */
+}
+
+.spotify-btn {
+    background-color: #1DB954;
+    border: none;
+    color: white;
+    padding: 15px 20px;
+    font-size: 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    //gap: 10px;
+    transition: background-color 0.3s;
+}
+
+.spotify-btn i {
+    font-size: 24px;
+}
+
+.spotify-btn:hover {
+    background-color: #1ed760;
+}
+
+.btn-text {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Modifiche per il link */
+a.spotify-btn {
+    display: inline-flex; /* Cambia da block a inline-flex per farlo adattare al contenuto */
+    justify-content: center;
+    align-items: center;
+    background-color: #1DB954;
+    color: white;
+    padding: 15px 20px;
+    font-size: 18px;
+    border-radius: 50px;
+    text-decoration: none; /* Rimuove la sottolineatura del link */
+    gap: 10px;
+    width: auto; /* Assicura che la larghezza si adatti al contenuto */
+}
+
+a.spotify-btn:hover {
+    background-color: #1ed760;
+}

@@ -1,4 +1,6 @@
-com\music\project\service\SpotifyAuthService.class
+com\music\project\config\SpotifyConfig.class
+com\music\project\controllers\AuthController.class
+com\music\project\services\GeniusService.class
 com\music\project\controller\HomeController.class
-com\music\project\controller\AuthController.class
+com\music\project\services\SpotifyService.class
 com\music\project\Main.class

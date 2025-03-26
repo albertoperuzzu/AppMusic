@@ -1,24 +1,31 @@
-package com.music.project.controller;
+package com.music.project.controllers;
 
-import com.music.project.service.SpotifyAuthService;
+import com.music.project.services.SpotifyService;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.stereotype.Controller;
+import java.util.Map;
 
-@RestController
-@RequestMapping("/api")
+@Controller
 public class AuthController {
 
-    private final SpotifyAuthService spotifyAuthService;
+    private final SpotifyService spotifyService;
 
-    public AuthController(SpotifyAuthService spotifyAuthService) {
-        this.spotifyAuthService = spotifyAuthService;
+    public AuthController(SpotifyService spotifyService) {
+        this.spotifyService = spotifyService;
     }
 
     @GetMapping("/callback")
     public String loginOk(@RequestParam("code") String code, Model model) {
-        String accessToken = spotifyAuthService.getSpotifyToken(code);
         model.addAttribute("authCode", code);
+        String accessToken = spotifyService.getSpotifyToken(code);
+        if(accessToken == null) {
+            return "error";
+        }
         model.addAttribute("accessToken", accessToken);
-        return "login_ok"; // Thymeleaf caricherà login_ok.html
+        Map userInfo = spotifyService.getUserInfo(accessToken);
+        model.addAttribute("display_name", (String) userInfo.get("display_name"));
+        return "login_ok";
     }
 }
