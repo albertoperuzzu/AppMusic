@@ -3,9 +3,9 @@ package com.music.project.services;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.List;
+import com.music.project.util.GeniusScraper;
 
 @Service
 public class GeniusService {
@@ -45,4 +45,9 @@ public class GeniusService {
             return null;
         }
     }
+
+    public String getLyrics(String geniusUrl) {
+        return GeniusScraper.scrapeLyrics(geniusUrl);
+    }
+
 }

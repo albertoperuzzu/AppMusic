@@ -1,6 +1,6 @@
-package com.music.project.controllers;
+package com.music.project.controller;
 
-import com.music.project.services.SpotifyService;
+import com.music.project.service.SpotifyService;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,11 +21,12 @@ public class AuthController {
         model.addAttribute("authCode", code);
         String accessToken = spotifyService.getSpotifyToken(code);
         if(accessToken == null) {
+            model.addAttribute("message", "Problemi nel retrieve del token di accesso");
             return "error";
         }
         model.addAttribute("accessToken", accessToken);
         Map userInfo = spotifyService.getUserInfo(accessToken);
-        model.addAttribute("display_name", (String) userInfo.get("display_name"));
+        model.addAttribute("display_name", userInfo.get("display_name"));
         return "login_ok";
     }
 }

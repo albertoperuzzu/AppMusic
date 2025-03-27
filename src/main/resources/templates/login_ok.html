@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-<h1 >Benvenuto in AppMusic, <span th:text="${display_name}"></span>!</h1>
+<h1>Benvenuto in AppMusic, <span th:text="${display_name}"></span>!</h1>
 <p>Wow! Hai fatto Login! Grande!</p>
 <p>Il code è <span th:text="${authCode}"></span></p>
 <p>Il token è <span th:text="${accessToken}"></span></p>
@@ -23,7 +23,6 @@
    th:href="'http://localhost:9999/play?access_token=' + ${accessToken}">
     Continua
 </a>
-<script type="text/javascript" th:src="@{/js/index.js}"></script>
 <script type="text/javascript" th:src="@{/js/open_spotify.js}"></script>
 </body>
 </html>

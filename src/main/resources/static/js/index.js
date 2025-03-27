@@ -1,9 +1,9 @@
-// Funzione per aprire la modale
-function openModal() {
-    document.getElementById("loginModal").style.display = "block";
-}
-
-// Funzione per chiudere la modale
-function closeModal() {
-    document.getElementById("loginModal").style.display = "none";
-}
+    // Recupera il token dall'elemento nascosto (Thymeleaf)
+    document.addEventListener("DOMContentLoaded", function () {
+        let accessToken = document.getElementById("spotifyToken").value;
+        if (accessToken) {
+            console.log("Tokenb di accesso recuperato!");
+        } else {
+            console.error("Nessun access token nella request");
+        }
+    });

@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.List;
-import com.music.project.services.SpotifyService;
+import com.music.project.service.SpotifyService;
 import com.music.project.services.GeniusService;
 
 @Controller
@@ -27,26 +27,33 @@ public class HomeController {
 
     @GetMapping("/play")
     public String play(@RequestParam("access_token") String accessToken, Model model) {
-        Map<String, Object> currentlyPlaying = spotifyService.getCurrentlyPlaying(accessToken);
         model.addAttribute("accessToken", accessToken);
-        if (currentlyPlaying != null && currentlyPlaying.containsKey("item")) {
-            Map<String, Object> item = (Map<String, Object>) currentlyPlaying.get("item");
-            String trackName = (String) item.get("name");
-            Map<String, Object> artist = ((List<Map<String, Object>>) item.get("artists")).get(0);
-            String artistName = (String) artist.get("name");
-            //Map<String, Object> album = ((List<Map<String, Object>>) item.get("album")).get(7);
-            //String albumName = (String) album.get("name");
-            model.addAttribute("track", trackName);
-            model.addAttribute("artist", artistName);
-            //model.addAttribute("album", albumName);
-            String query = trackName + " " + artistName;
-            String search = "https://genius.com" + geniusService.getLyricsLink(query);
-            model.addAttribute("redirect", search);
+        Map response = spotifyService.getDevices(accessToken);
+        List<Map<String, Object>> devices = (List<Map<String, Object>>) response.get("devices");
+        if(devices != null && !devices.isEmpty() && (Boolean) devices.get(0).get("is_active")) {
+            Map currentlyPlaying = spotifyService.getCurrentlyPlaying(accessToken);
+            if (currentlyPlaying != null && currentlyPlaying.containsKey("item")) {
+                Map<String, Object> item = (Map) currentlyPlaying.get("item");
+                String trackName = (String) item.get("name");
+                Map<String, Object> artist = ((List<Map>) item.get("artists")).get(0);
+                String artistName = (String) artist.get("name");
+                model.addAttribute("track", trackName);
+                model.addAttribute("artist", artistName);
+                String query = trackName + " " + artistName;
+                String search = "https://genius.com" + geniusService.getLyricsLink(query);
+                model.addAttribute("redirect", search);
+                spotifyService.pause(accessToken);
+                String lyrics = geniusService.getLyrics(search);
+                model.addAttribute("lyrics", lyrics);
+                return "play";
+            } else {
+                model.addAttribute("message", "Nessun brano attualmente in riproduzione.");
+                return "error";
+            }
         } else {
-            model.addAttribute("message", "Nessun brano attualmente in riproduzione.");
+            model.addAttribute("message", "Nessun dispositivo attivo sull'account");
             return "error";
         }
-        return "play";
     }
 
 }
