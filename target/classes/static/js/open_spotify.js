@@ -1,11 +1,12 @@
-async function checkSpotifyDevices(accessToken) {
+async function checkSpotifyDevices() {
     try {
-        let response = await fetch("https://api.spotify.com/v1/me/player/devices", {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + accessToken
-            }
+        let response = await fetch("/client/spotify/get/devices", {
+            method: "GET"
         });
+
+        if (!response.ok) {
+            throw new Error(`Errore: ${response.status}`);
+        }
 
         let data = await response.json();
 
@@ -15,19 +16,13 @@ async function checkSpotifyDevices(accessToken) {
             console.log("Nessun dispositivo, apro app");
             setTimeout(() => {
                 window.location.href = "spotify://";
-            }, 1000);
+            }, 200);
         }
-
     } catch (error) {
-        console.error("Errore nella richiesta API:", error);
+        console.error("Errore nella richiesta API DEVICES:", error);
     }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    let accessToken = document.getElementById("spotifyToken").value;
-    if (accessToken) {
-        checkSpotifyDevices(accessToken);
-    } else {
-        console.error("Nessun access token");
-    }
+    checkSpotifyDevices();
 });

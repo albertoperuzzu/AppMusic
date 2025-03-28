@@ -34,6 +34,10 @@ public class HomeController {
     public String play(Model model, HttpSession session) {
         String accessToken = (String) session.getAttribute("accessToken");
         model.addAttribute("accessToken", accessToken);
+        if(session.getAttribute("deviceId") != null) {
+            execSearch(spotifyService, geniusService, model, accessToken);
+            return "play";
+        }
         Map response = spotifyService.getDevices(accessToken);
         List<Map<String, Object>> devices = (List<Map<String, Object>>) response.get("devices");
         if(devices != null && !devices.isEmpty()) {
@@ -69,6 +73,7 @@ public class HomeController {
                 model.addAttribute("track", trackName);
                 model.addAttribute("artist", artistName);
                 String query = trackName + " " + artistName;
+                query = query.replace(" - Remastered", "").replace(" - live version", "").replace(" - Live", "");
                 String search = "https://genius.com" + geniusService.getLyricsLink(query);
                 model.addAttribute("redirect", search);
                 //spotifyService.pause(accessToken);

@@ -182,6 +182,23 @@ public class SpotifyService {
         }
     }
 
+    public String getDevicesClient(String accessToken) {
+        try {
+            return WebClient.builder()
+                .baseUrl("https://api.spotify.com/v1")
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .build()
+                .get()
+                .uri("/me/player/devices")
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        } catch (Exception ex) {
+            System.err.println("Errore nella richiesta devices: " + ex.getMessage());
+            return null;
+        }
+    }
+
     private String encodeClientCredentials(String clientId, String clientSecret) {
         return java.util.Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
     }

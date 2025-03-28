@@ -3,24 +3,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const pauseButton = document.getElementById("pauseBtn");
     const prevButton = document.getElementById("prevBtn");
     const nextButton = document.getElementById("nextBtn");
-    const accessToken = document.getElementById("spotifyToken").value;
-    if (!accessToken) {
-        alert("Access token non trovato! Assicurati di essere autenticato.");
-        return;
-    }
 
     async function controlSpotify(action) {
-        const apiUrl = `https://api.spotify.com/v1/me/player/${action}`;
-
+        const apiUrl = `/client/spotify/put/${action}`;
         try {
             const response = await fetch(apiUrl, {
-                method: "PUT",
-                headers: {
-                    "Authorization": "Bearer " + accessToken,
-                    "Content-Type": "application/json"
-                }
+                method: "PUT"
             });
-
             if (response.ok) {
                 console.log(`${action.toUpperCase()} eseguito con successo`);
             } else {
@@ -28,22 +17,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error(`Errore API: ${errorText}`);
             }
         } catch (error) {
-            console.error("Errore nella richiesta API:", error);
+            console.error("Errore nella richiesta API PLAY/PAUSE: ", error);
         }
     }
 
     async function skipTrack(action) {
-        const apiUrl = `https://api.spotify.com/v1/me/player/${action}`;
-
+        const apiUrl = `/client/spotify/post/${action}`;
         try {
             const response = await fetch(apiUrl, {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + accessToken,
-                    "Content-Type": "application/json"
-                }
+                method: "POST"
             });
-
             if (response.ok) {
                 console.log(`${action.toUpperCase()} eseguito con successo`);
                 window.location.reload();
@@ -52,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error(`Errore API: ${errorText}`);
             }
         } catch (error) {
-            console.error("Errore nella richiesta API:", error);
+            console.error("Errore nella richiesta API NEXT/PREV: ", error);
         }
     }
 
