@@ -1,5 +1,6 @@
 package com.music.project.service;
 
+import com.music.project.config.GeniusConfig;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -11,9 +12,11 @@ import com.music.project.util.GeniusScraper;
 public class GeniusService {
 
     private final WebClient webClient;
+    private final GeniusConfig geniusConfig;
 
-    public GeniusService(WebClient.Builder webClientBuilder) {
+    public GeniusService(WebClient.Builder webClientBuilder, GeniusConfig geniusConfig) {
         this.webClient = webClientBuilder.baseUrl("https://api.genius.com").build();
+        this.geniusConfig = geniusConfig;
     }
 
     public String getLyricsLink(String query) {
@@ -22,7 +25,7 @@ public class GeniusService {
                     .uri(uriBuilder -> uriBuilder.path("/search")
                             .queryParam("q", query)
                             .build())
-                    .header("Authorization", "Bearer x_kPHnYUcA_KSej5FXco-_Wyxm3bhyXaX3AYvck4kzCWd8TKbza-H99CpSBkuu5b")
+                    .header("Authorization", "Bearer " + geniusConfig.getToken())
                     .retrieve()
                     .bodyToMono(Map.class)
                     .block(); // Sincrono, otteniamo direttamente la risposta

@@ -3,5 +3,6 @@ com\music\project\controller\HomeController.class
 com\music\project\service\GeniusService.class
 com\music\project\Main.class
 com\music\project\util\GeniusScraper.class
+com\music\project\config\GeniusConfig.class
 com\music\project\service\SpotifyService.class
 com\music\project\controller\AuthController.class

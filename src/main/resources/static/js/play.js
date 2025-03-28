@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (response.ok) {
                 console.log(`${action.toUpperCase()} eseguito con successo`);
+                window.location.reload();
             } else {
                 const errorText = await response.text();
                 console.error(`Errore API: ${errorText}`);

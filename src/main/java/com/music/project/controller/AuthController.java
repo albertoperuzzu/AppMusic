@@ -1,6 +1,7 @@
 package com.music.project.controller;
 
 import com.music.project.service.SpotifyService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,13 +18,14 @@ public class AuthController {
     }
 
     @GetMapping("/callback")
-    public String loginOk(@RequestParam("code") String code, Model model) {
+    public String loginOk(@RequestParam("code") String code, Model model, HttpSession session) {
         model.addAttribute("authCode", code);
         String accessToken = spotifyService.getSpotifyToken(code);
         if(accessToken == null) {
             model.addAttribute("message", "Problemi nel retrieve del token di accesso");
             return "error";
         }
+        session.setAttribute("accessToken", accessToken);
         model.addAttribute("accessToken", accessToken);
         Map userInfo = spotifyService.getUserInfo(accessToken);
         model.addAttribute("display_name", userInfo.get("display_name"));

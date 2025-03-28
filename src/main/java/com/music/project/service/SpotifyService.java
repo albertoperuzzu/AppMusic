@@ -11,7 +11,6 @@ import org.springframework.http.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class SpotifyService {
@@ -29,8 +28,8 @@ public class SpotifyService {
             Map response = webClient.post()
                 .uri("/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .header("Authorization", "Basic " + encodeClientCredentials("6b0c12d36953474181057af3eb7f3787", "90f2b1c24f0b4e4ba387cb9ff07bcf68"))
-                .bodyValue("grant_type=authorization_code&code=" + code + "&redirect_uri=http://localhost:9999/callback")
+                .header("Authorization", "Basic " + encodeClientCredentials(spotifyConfig.getId(), spotifyConfig.getSecret()))
+                .bodyValue("grant_type=authorization_code&code=" + code + "&redirect_uri=" + spotifyConfig.getUri())
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse ->
                         clientResponse.bodyToMono(String.class)
@@ -44,7 +43,6 @@ public class SpotifyService {
         }
     }
 
-    // Esempio: ottieni informazioni dell'utente
     public Map getUserInfo(String accessToken) {
         try {
             return WebClient.builder()
@@ -66,7 +64,7 @@ public class SpotifyService {
         try {
             // Add a delay to let Spotify App to open and be ready.
             // This call is not executed in the case the app is already open and active
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             System.err.println("Interruzione del delay: " + e.getMessage());
@@ -74,6 +72,7 @@ public class SpotifyService {
         try {
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("device_ids", Collections.singletonList(deviceId));
+            //requestBody.put("play", true);
             HttpStatus status = (HttpStatus) webClient.put()
                 .uri("https://api.spotify.com/v1/me/player")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
@@ -82,7 +81,7 @@ public class SpotifyService {
                 .retrieve()
                 .toBodilessEntity()
                 .map(ResponseEntity::getStatusCode)
-                .block();  // Converte il Mono in un valore sincrono
+                .block();
             return status != null && status.is2xxSuccessful();
         } catch (Exception ex) {
             System.err.println("Errore durante transfer playback: " + ex.getMessage());

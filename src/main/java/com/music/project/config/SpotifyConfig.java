@@ -4,34 +4,34 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "spotify")  // Indica che i valori provengono da application.properties
+@ConfigurationProperties(prefix = "spotify")
 public class SpotifyConfig {
-    private String clientId;
-    private String clientSecret;
-    private String redirectUri;
 
-    // Getters e Setters
-    public String getClientId() {
-        return clientId;
+    private String id;
+    private String secret;
+    private String uri;
+
+    public String getId() {
+        return id;
     }
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getClientSecret() {
-        return clientSecret;
+    public String getSecret() {
+        return secret;
     }
 
-    public void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
-    public String getRedirectUri() {
-        return redirectUri;
+    public String getUri() {
+        return uri;
     }
 
-    public void setRedirectUri(String redirectUri) {
-        this.redirectUri = redirectUri;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 }

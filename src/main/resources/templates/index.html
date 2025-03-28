@@ -14,10 +14,10 @@
     </style>
 </head>
 <body>
-<h1 th:text="'Benvenuto in AppMusic, ' + ${username} + '!'">Benvenuto in AppMusic!</h1>
+<h1>Benvenuto in AppMusic!</h1>
 <p>La tua applicazione Spring Boot funziona su <strong>http://localhost:9999/</strong></p>
 <a id="spotifyLoginButton"
-   href="https://accounts.spotify.com/authorize?client_id=6b0c12d36953474181057af3eb7f3787&response_type=code&redirect_uri=http://localhost:9999/callback&scope=user-read-playback-state user-modify-playback-state">
+   th:href="'https://accounts.spotify.com/authorize?client_id=' + ${client_id} + '&response_type=code&redirect_uri=' + ${request_uri} + '&scope=user-read-playback-state user-modify-playback-state'">
     Accedi con Spotify
 </a>
 <script type="text/javascript" th:src="@{/js/index.js}"></script>
