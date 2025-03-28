@@ -16,8 +16,6 @@
 <body>
 <h1>Benvenuto in AppMusic, <span th:text="${display_name}"></span>!</h1>
 <p>Wow! Hai fatto Login! Grande!</p>
-<p>Il code è <span th:text="${authCode}"></span></p>
-<p>Il token è <span th:text="${accessToken}"></span></p>
 <input type="hidden" id="spotifyToken" th:value="${accessToken}">
 <a id="spotifyOpenButton"
    th:href="'http://localhost:9999/play?access_token=' + ${accessToken}">
