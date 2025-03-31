@@ -26,6 +26,9 @@ public class ClientSpotifyController {
             spotifyService.play(accessToken);
         } else if ("pause".equalsIgnoreCase(action)) {
             spotifyService.pause(accessToken);
+        } else if("restart".equalsIgnoreCase(action)) {
+            spotifyService.pause(accessToken);
+            spotifyService.restart(accessToken);
         }
         return ResponseEntity.ok("Azione " + action + " eseguita con successo");
     }

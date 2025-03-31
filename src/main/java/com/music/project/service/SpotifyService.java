@@ -199,6 +199,26 @@ public class SpotifyService {
         }
     }
 
+    public void restart(String accessToken) {
+        try {
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("position_ms", 0);
+            WebClient.builder()
+                    .baseUrl("https://api.spotify.com/v1")
+                    .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                    .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .build()
+                    .put()
+                    .uri("/me/player/play")
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+        } catch(Exception ex) {
+            System.err.println("Errore nel restart del brano: " + ex.getMessage());
+        }
+    }
+
     private String encodeClientCredentials(String clientId, String clientSecret) {
         return java.util.Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
     }

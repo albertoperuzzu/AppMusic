@@ -10,3 +10,5 @@ target/
 
 # Dipendenze scaricate da Maven
 .mvn/
+
+/src/main/resources/application.properties

@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const playButton = document.getElementById("playBtn");
     const pauseButton = document.getElementById("pauseBtn");
+    const restartButton = document.getElementById("restartBtn");
     const prevButton = document.getElementById("prevBtn");
     const nextButton = document.getElementById("nextBtn");
 
@@ -41,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     playButton.addEventListener("click", () => controlSpotify("play"));
     pauseButton.addEventListener("click", () => controlSpotify("pause"));
+    restartButton.addEventListener("click", () => controlSpotify("restart"));
     prevButton.addEventListener("click", () => skipTrack("previous"));
     nextButton.addEventListener("click", () => skipTrack("next"));
 });
