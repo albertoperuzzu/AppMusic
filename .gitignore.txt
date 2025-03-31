@@ -7,8 +7,7 @@ target/
 # Impostazioni dell'IDE
 .idea/
 *.iml
+**/application.properties
 
 # Dipendenze scaricate da Maven
 .mvn/
-
-/src/main/resources/application.properties
