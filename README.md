@@ -32,6 +32,19 @@ Clone the Repo:
 - Open the application.properties file in the src/main/resources/ directory and ensure that configurations are present, otherwise ask the owner or create you own Spotify App
 
 
+Add File application.properties
+- In the path src/main/resources add a file called application.properties
+- In file application.properties insert the configuration keys:
+  
+server.port=9999
+spotify.id={the spotify app ID}
+spotify.secret={the spotify app secret}
+spotify.uri=http://localhost:9999/callback
+genius.token={the genius website token}
+
+Remember to add this file, otherwise the App won't work
+
+
 Run the App:
 
 - To start the application, run the following command: "mvn spring-boot:run"
