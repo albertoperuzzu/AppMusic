@@ -8,9 +8,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import org.springframework.http.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class SpotifyService {
@@ -199,9 +197,12 @@ public class SpotifyService {
         }
     }
 
-    public void restart(String accessToken) {
+    public void restart(String accessToken, String trackURI) {
         try {
             Map<String, Object> requestBody = new HashMap<>();
+            List<String> uris = new ArrayList<>();
+            uris.add(trackURI);
+            requestBody.put("uris", uris);
             requestBody.put("position_ms", 0);
             WebClient.builder()
                     .baseUrl("https://api.spotify.com/v1")

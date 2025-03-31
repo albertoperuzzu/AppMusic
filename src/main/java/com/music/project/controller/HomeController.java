@@ -35,19 +35,19 @@ public class HomeController {
         String accessToken = (String) session.getAttribute("accessToken");
         model.addAttribute("accessToken", accessToken);
         if(session.getAttribute("deviceId") != null) {
-            execSearch(spotifyService, geniusService, model, accessToken);
+            execSearch(spotifyService, geniusService, model, accessToken, session);
             return "play";
         }
         Map response = spotifyService.getDevices(accessToken);
         List<Map<String, Object>> devices = (List<Map<String, Object>>) response.get("devices");
         if(devices != null && !devices.isEmpty()) {
             if((Boolean) devices.get(0).get("is_active")) {
-                execSearch(spotifyService, geniusService, model, accessToken);
+                execSearch(spotifyService, geniusService, model, accessToken, session);
                 session.setAttribute("deviceId", devices.get(0).get("id"));
                 return "play";
             } else {
                 if(spotifyService.getPlayerState(accessToken, (String) devices.get(0).get("id"))) {
-                    execSearch(spotifyService, geniusService, model, accessToken);
+                    execSearch(spotifyService, geniusService, model, accessToken, session);
                     session.setAttribute("deviceId", devices.get(0).get("id"));
                     return "play";
                 } else {
@@ -61,7 +61,7 @@ public class HomeController {
         }
     }
 
-    private void execSearch(SpotifyService spotifyService, GeniusService geniusService, Model model, String accessToken) {
+    private void execSearch(SpotifyService spotifyService, GeniusService geniusService, Model model, String accessToken, HttpSession session) {
         try {
             Thread.sleep(300);
             Map currentlyPlaying = spotifyService.getCurrentlyPlaying(accessToken);
@@ -72,6 +72,7 @@ public class HomeController {
                 String artistName = (String) artist.get("name");
                 model.addAttribute("track", trackName);
                 model.addAttribute("artist", artistName);
+                session.setAttribute("track_uri", item.get("uri"));
                 String query = trackName + " " + artistName;
                 query = query.replace(" - Remastered", "").replace(" - live version", "").replace(" - Live", "");
                 String search = "https://genius.com" + geniusService.getLyricsLink(query);
