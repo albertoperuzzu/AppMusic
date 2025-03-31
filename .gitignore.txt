@@ -7,6 +7,8 @@ target/
 # Impostazioni dell'IDE
 .idea/
 *.iml
+
+# Ignore keys
 **/application.properties
 /src/main/resources/application.properties
 
