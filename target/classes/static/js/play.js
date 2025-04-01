@@ -30,7 +30,9 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             if (response.ok) {
                 console.log(`${action.toUpperCase()} eseguito con successo`);
-                window.location.reload();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 200);
             } else {
                 const errorText = await response.text();
                 console.error(`Errore API: ${errorText}`);

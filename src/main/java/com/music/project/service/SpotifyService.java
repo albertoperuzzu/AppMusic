@@ -1,13 +1,16 @@
 package com.music.project.service;
 
 import com.music.project.config.SpotifyConfig;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import org.springframework.http.*;
-
 import java.util.*;
 
 @Service
@@ -21,9 +24,9 @@ public class SpotifyService {
         this.webClient = webClientBuilder.baseUrl("https://accounts.spotify.com/api").build();
     }
 
-    public String getSpotifyToken(String code) {
+    public Map<String, String> getSpotifyToken(String code) {
         try {
-            Map response = webClient.post()
+            Map<String, Object> response = webClient.post()
                 .uri("/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .header("Authorization", "Basic " + encodeClientCredentials(spotifyConfig.getId(), spotifyConfig.getSecret()))
@@ -32,9 +35,17 @@ public class SpotifyService {
                 .onStatus(HttpStatusCode::isError, clientResponse ->
                         clientResponse.bodyToMono(String.class)
                                 .flatMap(errorBody -> Mono.error(new RuntimeException("Error: " + errorBody))))
-                .bodyToMono(Map.class)
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .block();
-            return (String) response.get("access_token");
+            if (response != null) {
+                Map<String, String> tokens = new HashMap<>();
+                tokens.put("access_token", response.get("access_token").toString());
+                if(response.containsKey("refresh_token")) {
+                    tokens.put("refresh_token", response.get("refresh_token").toString());
+                }
+                return tokens;
+            }
+            return null;
         } catch (Exception ex) {
             System.err.println("Errore nel ricevimento del token di auth: " + ex.getMessage());
             return null;
@@ -218,6 +229,35 @@ public class SpotifyService {
         } catch(Exception ex) {
             System.err.println("Errore nel restart del brano: " + ex.getMessage());
         }
+    }
+
+    public Map<String, String> refreshAccessToken(String refreshToken) {
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("grant_type", "refresh_token");
+        formData.add("refresh_token", refreshToken);
+        String credentials = spotifyConfig.getId() + ":" + spotifyConfig.getSecret();
+        String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());
+        try {
+            Map<String, Object> response = webClient.post()
+                .uri("/token")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + encodedCredentials)
+                .body(BodyInserters.fromFormData(formData))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .block();
+            if (response != null && response.containsKey("access_token")) {
+                Map<String, String> tokenData = new HashMap<>();
+                tokenData.put("access_token", response.get("access_token").toString());
+                if (response.containsKey("refresh_token")) {
+                    tokenData.put("refresh_token", response.get("refresh_token").toString());
+                }
+                return tokenData;
+            }
+        } catch (Exception e) {
+            System.err.println("Error refreshing token: " + e.getMessage());
+        }
+        return null;
     }
 
     private String encodeClientCredentials(String clientId, String clientSecret) {

@@ -30,26 +30,20 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/play")
-    public String play(Model model, HttpSession session) {
+    @GetMapping("/landing")
+    public String landing(Model model, HttpSession session) {
         String accessToken = (String) session.getAttribute("accessToken");
-        model.addAttribute("accessToken", accessToken);
-        if(session.getAttribute("deviceId") != null) {
-            execSearch(spotifyService, geniusService, model, accessToken, session);
-            return "play";
-        }
         Map response = spotifyService.getDevices(accessToken);
         List<Map<String, Object>> devices = (List<Map<String, Object>>) response.get("devices");
+        model.addAttribute("display_name", session.getAttribute("display_name"));
         if(devices != null && !devices.isEmpty()) {
             if((Boolean) devices.get(0).get("is_active")) {
-                execSearch(spotifyService, geniusService, model, accessToken, session);
                 session.setAttribute("deviceId", devices.get(0).get("id"));
-                return "play";
+                return "landing";
             } else {
                 if(spotifyService.getPlayerState(accessToken, (String) devices.get(0).get("id"))) {
-                    execSearch(spotifyService, geniusService, model, accessToken, session);
                     session.setAttribute("deviceId", devices.get(0).get("id"));
-                    return "play";
+                    return "landing";
                 } else {
                     model.addAttribute("message", "Nessun dispositivo attivo sull'account");
                     return "error";
@@ -61,9 +55,21 @@ public class HomeController {
         }
     }
 
+    @GetMapping("/play")
+    public String play(Model model, HttpSession session) {
+        String accessToken = (String) session.getAttribute("accessToken");
+        //model.addAttribute("accessToken", accessToken);
+        if(session.getAttribute("deviceId") != null) {
+            execSearch(spotifyService, geniusService, model, accessToken, session);
+            return "play";
+        } else {
+            return "error";
+        }
+    }
+
     private void execSearch(SpotifyService spotifyService, GeniusService geniusService, Model model, String accessToken, HttpSession session) {
-        try {
-            Thread.sleep(300);
+        // try {
+        //    Thread.sleep(300);
             Map currentlyPlaying = spotifyService.getCurrentlyPlaying(accessToken);
             if (currentlyPlaying != null && currentlyPlaying.containsKey("item")) {
                 Map<String, Object> item = (Map) currentlyPlaying.get("item");
@@ -83,10 +89,10 @@ public class HomeController {
             } else {
                 model.addAttribute("message", "Nessun brano attualmente in riproduzione.");
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.err.println("Interruzione del delay: " + e.getMessage());
-        }
+        //} catch (InterruptedException e) {
+        //    Thread.currentThread().interrupt();
+        //    System.err.println("Interruzione del delay: " + e.getMessage());
+        //}
     }
 
 }

@@ -6,4 +6,6 @@ C:\Personal\App_music\AppMusic\src\main\java\com\music\project\service\SpotifySe
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\controller\ClientSpotifyController.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\Main.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\config\SpotifyConfig.java
+C:\Personal\App_music\AppMusic\src\main\java\com\music\project\config\WebMvcConfig.java
+C:\Personal\App_music\AppMusic\src\main\java\com\music\project\interceptor\TokenRefreshInterceptor.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\service\GeniusService.java

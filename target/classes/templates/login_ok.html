@@ -15,8 +15,9 @@
 </head>
 <body>
     <h1>Benvenuto in AppMusic, <span th:text="${display_name}"></span>!</h1>
-    <p>Wow! Hai fatto Login! Grande!</p>
-    <a id="spotifyOpenButton" href="http://localhost:9999/play">Continua</a>
+    <p>Hai effettuato il login con successo!</p>
+    <p>Se l'App di Spotify non era in uso, attendi qualche istante, si aprirà da sola!</p>
+    <a id="spotifyOpenButton" href="http://localhost:9999/landing">Continua</a>
 <script type="text/javascript" th:src="@{/js/open_spotify.js}"></script>
 </body>
 </html>

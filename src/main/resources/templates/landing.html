@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppMusic</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Benvenuto in AppMusic, <span th:text="${display_name}"></span>!</h1>
+    <p>Siamo pronti per iniziare!</p>
+    <p>Dalla prossima schermata sarà possibile accedere al player di Spotify</p>
+    <p>e visualizzare il testo della canzone in riproduzione!</p>
+    <a id="spotifyOpenButton" href="http://localhost:9999/play">Continua</a>
+</body>
+</html>

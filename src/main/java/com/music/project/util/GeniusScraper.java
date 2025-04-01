@@ -15,6 +15,7 @@ public class GeniusScraper {
                             "AppleWebKit/537.36 (KHTML, like Gecko) " +
                             "Chrome/100.0.4896.75 Safari/537.36")
                     .get();
+            doc.select("div[class^=LyricsHeader__Container-sc-3eaf69e8]").remove();
             Elements lyricsElements = doc.select("div[data-lyrics-container='true']");
             lyricsElements.select("a").unwrap();
             lyricsElements.select("span").unwrap();
