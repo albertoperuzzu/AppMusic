@@ -1,6 +1,7 @@
 package com.music.project.service;
 
 import com.music.project.config.SpotifyConfig;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -208,24 +209,28 @@ public class SpotifyService {
         }
     }
 
-    public void restart(String accessToken, String trackURI) {
+    public void restart(String accessToken, String trackURI, HttpSession session) {
         try {
             Map<String, Object> requestBody = new HashMap<>();
             List<String> uris = new ArrayList<>();
             uris.add(trackURI);
+            if(session.getAttribute("queue") != null) {
+                List<String> queue = (List<String>) session.getAttribute("queue");
+                uris.addAll(queue);
+            }
             requestBody.put("uris", uris);
             requestBody.put("position_ms", 0);
             WebClient.builder()
-                    .baseUrl("https://api.spotify.com/v1")
-                    .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                    .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .build()
-                    .put()
-                    .uri("/me/player/play")
-                    .bodyValue(requestBody)
-                    .retrieve()
-                    .bodyToMono(Void.class)
-                    .block();
+                .baseUrl("https://api.spotify.com/v1")
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build()
+                .put()
+                .uri("/me/player/play")
+                .bodyValue(requestBody)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
         } catch(Exception ex) {
             System.err.println("Errore nel restart del brano: " + ex.getMessage());
         }
@@ -258,6 +263,23 @@ public class SpotifyService {
             System.err.println("Error refreshing token: " + e.getMessage());
         }
         return null;
+    }
+
+    public Map getQueue(String accessToken) {
+        try {
+            return WebClient.builder()
+                .baseUrl("https://api.spotify.com/v1")
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .build()
+                .get()
+                .uri("/me/player/queue")
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
+        } catch(Exception ex) {
+            System.err.println("Errore nel recupero della queue: " + ex.getMessage());
+            return null;
+        }
     }
 
     private String encodeClientCredentials(String clientId, String clientSecret) {

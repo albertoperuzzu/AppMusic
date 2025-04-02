@@ -42,9 +42,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    async function checkSpotifyDevices() {
+        try {
+            let response = await fetch("/client/spotify/get/queue", {
+                method: "GET"
+            });
+            if (!response.ok) {
+                throw new Error(`Errore: ${response.status}`);
+            }
+        } catch (error) {
+            console.error("Errore nella richiesta API DEVICES:", error);
+        }
+    }
+
     playButton.addEventListener("click", () => controlSpotify("play"));
     pauseButton.addEventListener("click", () => controlSpotify("pause"));
     restartButton.addEventListener("click", () => controlSpotify("restart"));
     prevButton.addEventListener("click", () => skipTrack("previous"));
     nextButton.addEventListener("click", () => skipTrack("next"));
+
+    setTimeout(() => {
+        checkSpotifyDevices();
+    }, 500);
 });

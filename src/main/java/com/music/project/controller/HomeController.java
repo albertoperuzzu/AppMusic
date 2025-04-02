@@ -10,6 +10,8 @@ import java.util.List;
 import com.music.project.service.SpotifyService;
 import com.music.project.service.GeniusService;
 
+import static com.music.project.util.SpotifyUtils.execSearch;
+
 @Controller
 public class HomeController {
 
@@ -58,41 +60,12 @@ public class HomeController {
     @GetMapping("/play")
     public String play(Model model, HttpSession session) {
         String accessToken = (String) session.getAttribute("accessToken");
-        //model.addAttribute("accessToken", accessToken);
         if(session.getAttribute("deviceId") != null) {
             execSearch(spotifyService, geniusService, model, accessToken, session);
             return "play";
         } else {
             return "error";
         }
-    }
-
-    private void execSearch(SpotifyService spotifyService, GeniusService geniusService, Model model, String accessToken, HttpSession session) {
-        // try {
-        //    Thread.sleep(300);
-            Map currentlyPlaying = spotifyService.getCurrentlyPlaying(accessToken);
-            if (currentlyPlaying != null && currentlyPlaying.containsKey("item")) {
-                Map<String, Object> item = (Map) currentlyPlaying.get("item");
-                String trackName = (String) item.get("name");
-                Map<String, Object> artist = ((List<Map>) item.get("artists")).get(0);
-                String artistName = (String) artist.get("name");
-                model.addAttribute("track", trackName);
-                model.addAttribute("artist", artistName);
-                session.setAttribute("track_uri", item.get("uri"));
-                String query = trackName + " " + artistName;
-                query = query.replace(" - Remastered", "").replace(" - live version", "").replace(" - Live", "");
-                String search = "https://genius.com" + geniusService.getLyricsLink(query);
-                model.addAttribute("redirect", search);
-                //spotifyService.pause(accessToken);
-                String lyrics = geniusService.getLyrics(search);
-                model.addAttribute("lyrics", lyrics);
-            } else {
-                model.addAttribute("message", "Nessun brano attualmente in riproduzione.");
-            }
-        //} catch (InterruptedException e) {
-        //    Thread.currentThread().interrupt();
-        //    System.err.println("Interruzione del delay: " + e.getMessage());
-        //}
     }
 
 }

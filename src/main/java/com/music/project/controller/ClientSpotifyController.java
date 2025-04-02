@@ -6,6 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
+import static com.music.project.util.SpotifyUtils.handleQueue;
+
 @RestController
 @RequestMapping("/client/spotify")
 public class ClientSpotifyController {
@@ -27,7 +31,7 @@ public class ClientSpotifyController {
         } else if ("pause".equalsIgnoreCase(action)) {
             spotifyService.pause(accessToken);
         } else if("restart".equalsIgnoreCase(action)) {
-            spotifyService.restart(accessToken, (String) session.getAttribute("track_uri"));
+            spotifyService.restart(accessToken, (String) session.getAttribute("track_uri"), session);
         }
         return ResponseEntity.ok("Azione " + action + " eseguita con successo");
     }
@@ -55,6 +59,10 @@ public class ClientSpotifyController {
         if("devices".equalsIgnoreCase(action)) {
             String devicesJson = spotifyService.getDevicesClient(accessToken);
             return ResponseEntity.ok(devicesJson);
+        } else if("queue".equalsIgnoreCase(action)) {
+            Map queueJson = spotifyService.getQueue(accessToken);
+            handleQueue(session, queueJson);
+            return ResponseEntity.ok(queueJson);
         }
         return ResponseEntity.ok("Azione " + action + " eseguita con successo");
     }
