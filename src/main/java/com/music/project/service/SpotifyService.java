@@ -282,6 +282,51 @@ public class SpotifyService {
         }
     }
 
+    public String searchTrack(String accessToken, String query) {
+        String queryString = "/search" + "?q=" + query + "&type=track&limit=10";
+        try {
+            return WebClient.builder()
+                .baseUrl("https://api.spotify.com/v1")
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .build()
+                .get()
+                .uri(queryString)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        } catch(Exception ex) {
+            System.err.println("Errore nel recupero della queue: " + ex.getMessage());
+            return null;
+        }
+    }
+
+    public void searchPlay(String accessToken, String query, HttpSession session) {
+        try {
+            Map<String, Object> requestBody = new HashMap<>();
+            List<String> uris = new ArrayList<>();
+            uris.add(query);
+            if(session.getAttribute("queue") != null) {
+                List<String> queue = (List<String>) session.getAttribute("queue");
+                uris.addAll(queue);
+            }
+            requestBody.put("uris", uris);
+            requestBody.put("position_ms", 0);
+            WebClient.builder()
+                .baseUrl("https://api.spotify.com/v1")
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build()
+                .put()
+                .uri("/me/player/play")
+                .bodyValue(requestBody)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+        } catch(Exception ex) {
+            System.err.println("Errore nel restart del brano: " + ex.getMessage());
+        }
+    }
+
     private String encodeClientCredentials(String clientId, String clientSecret) {
         return java.util.Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
     }

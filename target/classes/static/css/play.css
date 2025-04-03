@@ -11,7 +11,7 @@ body {
     justify-content: center;
     gap: 10px;
     margin-top: 20px;
-    margin-bottom: 30px; /* Spazio extra sotto i bottoni */
+    margin-bottom: 30px;
 }
 
 .spotify-btn {
@@ -41,9 +41,8 @@ body {
     font-size: 16px;
 }
 
-/* Modifiche per il link */
 a.spotify-btn {
-    display: inline-flex; /* Cambia da block a inline-flex per farlo adattare al contenuto */
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     background-color: #1DB954;
@@ -51,11 +50,50 @@ a.spotify-btn {
     padding: 15px 20px;
     font-size: 18px;
     border-radius: 50px;
-    text-decoration: none; /* Rimuove la sottolineatura del link */
+    text-decoration: none;
     gap: 10px;
-    width: auto; /* Assicura che la larghezza si adatti al contenuto */
+    width: auto;
 }
 
 a.spotify-btn:hover {
     background-color: #1ed760;
+}
+
+#search-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}
+
+#search-container input {
+    width: 300px;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #282828;
+    color: white;
+}
+
+#search-container input::placeholder {
+    color: #b3b3b3;
+}
+
+#resultsSelect {
+    width: 300px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #282828;
+    color: white;
+    position: absolute;
+    top: calc(100% + 5px); /* posiziona subito sotto l'input */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: none; /* di default nascosto */
 }

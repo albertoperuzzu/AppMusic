@@ -29,9 +29,15 @@
     <a th:href="${redirect}" class="spotify-btn" target="_blank">
         Link per web scraping
     </a>
+    <div id="search-container">
+        <input type="text" id="searchInput" placeholder="Cerca su Spotify..." />
+        <select id="resultsSelect" size="5">
+        </select>
+    </div>
     <br>
     <br>
     <p>TESTO: <span th:utext="${lyrics}"></span></p>
     <script type="text/javascript" th:src="@{/js/play.js}"></script>
+    <script type="text/javascript" th:src="@{/js/search.js}"></script>
 </body>
 </html>

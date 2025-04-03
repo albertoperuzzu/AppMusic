@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static com.music.project.util.SpotifyUtils.handleQueue;
@@ -63,6 +64,22 @@ public class ClientSpotifyController {
             Map queueJson = spotifyService.getQueue(accessToken);
             handleQueue(session, queueJson);
             return ResponseEntity.ok(queueJson);
+        }
+        return ResponseEntity.ok("Azione " + action + " eseguita con successo");
+    }
+
+    @GetMapping("/search/{action}")
+    public ResponseEntity<?> searchSpotify(@RequestParam String query, @PathVariable String action, HttpSession session) {
+        String accessToken = (String) session.getAttribute("accessToken");
+        if (accessToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access token non trovato");
+        }
+        if("ask".equalsIgnoreCase(action)) {
+            String searchResultsJson = spotifyService.searchTrack(accessToken, query);
+            return ResponseEntity.ok(searchResultsJson);
+        } else if("play".equalsIgnoreCase(action)) {
+            spotifyService.searchPlay(accessToken, query, session);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Azione play eseguita con successo"));
         }
         return ResponseEntity.ok("Azione " + action + " eseguita con successo");
     }
