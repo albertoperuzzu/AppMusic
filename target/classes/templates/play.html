@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AppMusic</title>
     <link rel="stylesheet" th:href="@{/css/play.css}" />
+    <link rel="stylesheet" th:href="@{/css/translation.css}">
 </head>
 <body>
     <h1>Spotify Player</h1>
@@ -26,7 +27,7 @@
             <i class="fas fa-step-forward"></i> <span class="btn-text">Next</span>
         </button>
     </div>
-    <a th:href="${redirect}" class="spotify-btn" target="_blank">
+    <a th:href="${redirect}" class="spotify-btn" target="_blank" style="display:none">
         Link per web scraping
     </a>
     <div id="search-container">
@@ -35,9 +36,19 @@
         </select>
     </div>
     <br>
-    <br>
-    <p>TESTO: <span th:utext="${lyrics}"></span></p>
+    <div class="btn-container">
+        <button class="spotify-btn" id="callAI">
+            <i class="fas fa-step-forward"></i> <span class="btn-text">Traduci</span>
+        </button>
+    </div>
+    <div id="translation-container">
+        <div id="original-container">
+            <span th:utext="${lyrics}"></span>
+        </div>
+        <div id="result"></div>
+    </div>
     <script type="text/javascript" th:src="@{/js/play.js}"></script>
     <script type="text/javascript" th:src="@{/js/search.js}"></script>
+    <script type="text/javascript" th:src="@{/js/gemini.js}"></script>
 </body>
 </html>

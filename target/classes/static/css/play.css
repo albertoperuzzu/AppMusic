@@ -91,9 +91,9 @@ a.spotify-btn:hover {
     background-color: #282828;
     color: white;
     position: absolute;
-    top: calc(100% + 5px); /* posiziona subito sotto l'input */
+    top: calc(100% + 5px);
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
-    display: none; /* di default nascosto */
+    display: none;
 }

@@ -1,12 +1,15 @@
+C:\Personal\App_music\AppMusic\src\main\java\com\music\project\controller\ClientGeminiController.java
+C:\Personal\App_music\AppMusic\src\main\java\com\music\project\Main.java
+C:\Personal\App_music\AppMusic\src\main\java\com\music\project\config\WebMvcConfig.java
+C:\Personal\App_music\AppMusic\src\main\java\com\music\project\service\GeminiService.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\util\GeniusScraper.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\controller\AuthController.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\config\GeniusConfig.java
+C:\Personal\App_music\AppMusic\src\main\java\com\music\project\config\GeminiConfig.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\controller\HomeController.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\service\SpotifyService.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\controller\ClientSpotifyController.java
-C:\Personal\App_music\AppMusic\src\main\java\com\music\project\Main.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\config\SpotifyConfig.java
-C:\Personal\App_music\AppMusic\src\main\java\com\music\project\config\WebMvcConfig.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\interceptor\TokenRefreshInterceptor.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\service\GeniusService.java
 C:\Personal\App_music\AppMusic\src\main\java\com\music\project\util\SpotifyUtils.java

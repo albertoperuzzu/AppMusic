@@ -32,7 +32,9 @@ public class SpotifyUtils {
             model.addAttribute("redirect", search);
             //spotifyService.pause(accessToken);
             String lyrics = geniusService.getLyrics(search);
+            lyrics = lyrics.replaceFirst("^<br><br>", "");
             model.addAttribute("lyrics", lyrics);
+            session.setAttribute("current_lyrics", lyrics);
         } else {
             model.addAttribute("message", "Nessun brano attualmente in riproduzione.");
         }

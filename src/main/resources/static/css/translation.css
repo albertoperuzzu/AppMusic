@@ -1,0 +1,25 @@
+#translation-container {
+  text-align: center;
+  transition: all 0.3s ease;
+  margin: 20px auto;
+  max-width: 800px;
+}
+
+#translation-container > div {
+  margin-bottom: 20px;
+}
+
+#translation-container.translated {
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+}
+
+#translation-container.translated > div {
+  width: 60%;
+  margin-bottom: 0;
+}
+
+#result {
+    white-space: pre-line;
+}
