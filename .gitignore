@@ -11,6 +11,7 @@ target/
 # Ignore keys
 /src/main/resources/application.properties
 /src/target
+/src/test
 
 # Dipendenze scaricate da Maven
 .mvn/
