@@ -1,6 +1,7 @@
 package com.music.project.service;
 
 import com.music.project.config.GeminiConfig;
+import com.music.project.constant.AMConst;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,7 +20,7 @@ public class GeminiService {
 
     public Mono<String> callGeminiPrompt(String lyrics) {
         lyrics = lyrics.replaceAll("\"", "'");
-        String prompt = "Traduci in italiano questa canzone (solo traduzione nel testo): " + lyrics;
+        String prompt = AMConst.GEMINI_TEXT_PROMPT + lyrics;
         String url = ":generateContent?key=" + geminiConfig.getKey();
         String requestBody = """
             {

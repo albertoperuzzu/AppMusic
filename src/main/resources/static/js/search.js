@@ -67,7 +67,12 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 console.log("Chiamata play eseguita con successo:", data);
                 setTimeout(() => {
-                    window.location.reload();
+                    const currentPath = window.location.pathname;
+                    if (currentPath === "/podcast") {
+                        window.location.href = "/play";
+                    } else {
+                        window.location.reload();
+                    }
                 }, 700);
             })
             .catch(error => {

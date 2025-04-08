@@ -1,6 +1,7 @@
 package com.music.project.service;
 
 import com.music.project.config.GeniusConfig;
+import com.music.project.constant.AMConst;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -15,7 +16,7 @@ public class GeniusService {
     private final GeniusConfig geniusConfig;
 
     public GeniusService(WebClient.Builder webClientBuilder, GeniusConfig geniusConfig) {
-        this.webClient = webClientBuilder.baseUrl("https://api.genius.com").build();
+        this.webClient = webClientBuilder.baseUrl(AMConst.PATTERN_GENIUS_BASEURL).build();
         this.geniusConfig = geniusConfig;
     }
 
@@ -29,17 +30,17 @@ public class GeniusService {
                     .retrieve()
                     .bodyToMono(Map.class)
                     .block(); // Sincrono, otteniamo direttamente la risposta
-            Map<String, Object> responseResponse = (Map<String, Object>) response.get("response");
-            if (responseResponse != null && responseResponse.containsKey("hits")) {
-                var hits = (List<Map<String, Object>>) responseResponse.get("hits");
+            Map<String, Object> responseResponse = (Map<String, Object>) response.get(AMConst.JSON_GENIUS_RESPONSE);
+            if (responseResponse != null && responseResponse.containsKey(AMConst.JSON_GENIUS_HITS)) {
+                var hits = (List<Map<String, Object>>) responseResponse.get(AMConst.JSON_GENIUS_HITS);
                 if (hits != null && !hits.isEmpty()) {
-                    Map<String, Object> result = (Map<String, Object>) hits.get(0).get("result");
-                    return (String) result.get("path");
+                    Map<String, Object> result = (Map<String, Object>) hits.get(0).get(AMConst.JSON_GENIUS_RESULT);
+                    return (String) result.get(AMConst.JSON_GENIUS_PATH);
                 }
             }
             return null;
         } catch (WebClientResponseException e) {
-            System.err.println("Errore nella risposta API: " + e.getMessage());
+            System.err.println("Errore nella risposta GENIUS API: " + e.getMessage());
             return null;
         }
     }

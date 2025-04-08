@@ -1,5 +1,6 @@
 package com.music.project.controller;
 
+import com.music.project.constant.AMConst;
 import com.music.project.service.SpotifyService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
@@ -21,20 +22,20 @@ public class AuthController {
     public String loginOk(@RequestParam("code") String code, Model model, HttpSession session) {
         Map<String, String> tokenResponse = spotifyService.getSpotifyToken(code);
         if(tokenResponse == null) {
-            model.addAttribute("message", "Problemi nel retrieve del token di accesso");
-            return "error";
+            model.addAttribute(AMConst.MODEL_MESSAGE, "Problemi nel retrieve del token di accesso");
+            return AMConst.ERROR_PAGE;
         }
-        String accessToken = tokenResponse.get("access_token");
-        session.setAttribute("accessToken", accessToken);
+        String accessToken = tokenResponse.get(AMConst.JSON_SPOTIFY_ACCESS_TOKEN);
+        session.setAttribute(AMConst.SESSION_SPOTIFY_TOKEN, accessToken);
         long currentTime = System.currentTimeMillis();
-        session.setAttribute("tokenExpiry", currentTime + 3600 * 1000);
-        if(tokenResponse.containsKey("refresh_token")) {
-            String refreshToken = tokenResponse.get("refresh_token");
-            session.setAttribute("refreshToken", refreshToken);
+        session.setAttribute(AMConst.SESSION_SPOTIFY_TOKEN_EXPIRY, currentTime + 3600 * 1000);
+        if(tokenResponse.containsKey(AMConst.JSON_SPOTIFY_REFRESH_TOKEN)) {
+            String refreshToken = tokenResponse.get(AMConst.JSON_SPOTIFY_REFRESH_TOKEN);
+            session.setAttribute(AMConst.SESSION_SPOTIFY_TOKEN_REFRESH, refreshToken);
         }
         Map userInfo = spotifyService.getUserInfo(accessToken);
-        model.addAttribute("display_name", userInfo.get("display_name"));
-        session.setAttribute("display_name", userInfo.get("display_name"));
-        return "login_ok";
+        model.addAttribute(AMConst.MODEL_USERNAME, userInfo.get(AMConst.JSON_SPOTIFY_USERNAME));
+        session.setAttribute(AMConst.SESSION_SPOTIFY_USERNAME, userInfo.get(AMConst.JSON_SPOTIFY_USERNAME));
+        return AMConst.LOGIN_OK_PAGE;
     }
 }

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppMusic</title>
+    <link rel="stylesheet" th:href="@{/css/play.css}" />
+</head>
+<body>
+<h1>Aspetta! C'è un podcast in riproduzione!</h1>
+<p>Cerca una canzone per iniziare la lezione!</p>
+<div id="search-container">
+    <input type="text" id="searchInput" placeholder="Cerca su Spotify..." />
+    <select id="resultsSelect" size="5">
+    </select>
+</div>
+<script type="text/javascript" th:src="@{/js/search.js}"></script>
+</body>
+</html>

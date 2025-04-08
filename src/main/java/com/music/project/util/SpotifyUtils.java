@@ -1,7 +1,6 @@
 package com.music.project.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.music.project.constant.AMConst;
 import com.music.project.service.GeniusService;
 import com.music.project.service.SpotifyService;
 import jakarta.servlet.http.HttpSession;
@@ -13,45 +12,49 @@ import java.util.Map;
 
 public class SpotifyUtils {
 
-    public static void execSearch(SpotifyService spotifyService, GeniusService geniusService, Model model, String accessToken, HttpSession session) {
+    public static Boolean execSearch(SpotifyService spotifyService, GeniusService geniusService, Model model, String accessToken, HttpSession session) {
         Map currentlyPlaying = spotifyService.getCurrentlyPlaying(accessToken);
-        if (currentlyPlaying != null && currentlyPlaying.containsKey("item")) {
-            if(currentlyPlaying.get("item") == null) {
-                model.addAttribute("message", "Podcast in riproduzione! Seleziona una canzone!");
+        if (currentlyPlaying != null && currentlyPlaying.containsKey(AMConst.JSON_SPOTIFY_ITEM)) {
+            if(currentlyPlaying.get(AMConst.JSON_SPOTIFY_ITEM) == null) {
+                model.addAttribute(AMConst.MODEL_MESSAGE, "Podcast in riproduzione! Seleziona una canzone!");
+                return false;
+            } else {
+                Map<String, Object> item = (Map) currentlyPlaying.get(AMConst.JSON_SPOTIFY_ITEM);
+                String trackName = (String) item.get(AMConst.JSON_SPOTIFY_NAME);
+                Map<String, Object> artist = ((List<Map>) item.get(AMConst.JSON_SPOTIFY_ARTISTS)).get(0);
+                String artistName = (String) artist.get(AMConst.JSON_SPOTIFY_NAME);
+                model.addAttribute(AMConst.MODEL_TRACK, trackName);
+                model.addAttribute(AMConst.MODEL_ARTIST, artistName);
+                session.setAttribute(AMConst.SESSION_SPOTIFY_DURATION, item.get(AMConst.JSON_SPOTIFY_DURATION));
+                session.setAttribute(AMConst.SESSION_SPOTIFY_TRACK_URI, item.get(AMConst.JSON_SPOTIFY_URI));
+                String query = trackName + " " + artistName;
+                query = query.replace(" - Remastered", "").replace(" - live version", "").replace(" - Live", "");
+                String search = "https://genius.com" + geniusService.getLyricsLink(query);
+                model.addAttribute(AMConst.MODEL_REDIRECT, search);
+                String lyrics = geniusService.getLyrics(search);
+                lyrics = lyrics.replaceFirst("^<br><br>", "");
+                model.addAttribute(AMConst.MODEL_LYRICS, lyrics);
+                session.setAttribute(AMConst.SESSION_SPOTIFY_CURRENT_LYRICS, lyrics);
+                return true;
             }
-            Map<String, Object> item = (Map) currentlyPlaying.get("item");
-            String trackName = (String) item.get("name");
-            Map<String, Object> artist = ((List<Map>) item.get("artists")).get(0);
-            String artistName = (String) artist.get("name");
-            model.addAttribute("track", trackName);
-            model.addAttribute("artist", artistName);
-            session.setAttribute("track_uri", item.get("uri"));
-            String query = trackName + " " + artistName;
-            query = query.replace(" - Remastered", "").replace(" - live version", "").replace(" - Live", "");
-            String search = "https://genius.com" + geniusService.getLyricsLink(query);
-            model.addAttribute("redirect", search);
-            //spotifyService.pause(accessToken);
-            String lyrics = geniusService.getLyrics(search);
-            lyrics = lyrics.replaceFirst("^<br><br>", "");
-            model.addAttribute("lyrics", lyrics);
-            session.setAttribute("current_lyrics", lyrics);
         } else {
-            model.addAttribute("message", "Nessun brano attualmente in riproduzione.");
+            model.addAttribute(AMConst.MODEL_MESSAGE, "Nessun brano attualmente in riproduzione.");
+            return false;
         }
     }
 
     public static void handleQueue(HttpSession session, Map queueJson) {
         if (queueJson != null) {
-            Object queueObj = queueJson.get("queue");
+            Object queueObj = queueJson.get(AMConst.JSON_SPOTIFY_QUEUE);
             List<Map<String, Object>> queueList = (List<Map<String, Object>>) queueObj;
             if(queueList != null && !queueList.isEmpty()) {
                 List<String> trackList = new ArrayList<>();
                 for (Map<String, Object> stringObjectMap : queueList) {
-                    String track = (String) stringObjectMap.get("uri");
+                    String track = (String) stringObjectMap.get(AMConst.JSON_SPOTIFY_URI);
                     trackList.add(track);
                 }
                 if(!trackList.isEmpty()) {
-                    session.setAttribute("queue", trackList);
+                    session.setAttribute(AMConst.SESSION_SPOTIFY_QUEUE, trackList);
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.music.project.service;
 
 import com.music.project.config.SpotifyConfig;
+import com.music.project.constant.AMConst;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class SpotifyService {
 
     public SpotifyService(SpotifyConfig spotifyConfig, WebClient.Builder webClientBuilder) {
         this.spotifyConfig = spotifyConfig;
-        this.webClient = webClientBuilder.baseUrl("https://accounts.spotify.com/api").build();
+        this.webClient = webClientBuilder.baseUrl(AMConst.PATTERN_SPOTIFY_BASEURL_API).build();
     }
 
     public Map<String, String> getSpotifyToken(String code) {
@@ -30,7 +31,7 @@ public class SpotifyService {
             Map<String, Object> response = webClient.post()
                 .uri("/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .header("Authorization", "Basic " + encodeClientCredentials(spotifyConfig.getId(), spotifyConfig.getSecret()))
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + encodeClientCredentials(spotifyConfig.getId(), spotifyConfig.getSecret()))
                 .bodyValue("grant_type=authorization_code&code=" + code + "&redirect_uri=" + spotifyConfig.getUri())
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse ->
@@ -40,9 +41,9 @@ public class SpotifyService {
                 .block();
             if (response != null) {
                 Map<String, String> tokens = new HashMap<>();
-                tokens.put("access_token", response.get("access_token").toString());
-                if(response.containsKey("refresh_token")) {
-                    tokens.put("refresh_token", response.get("refresh_token").toString());
+                tokens.put(AMConst.JSON_SPOTIFY_ACCESS_TOKEN, response.get(AMConst.JSON_SPOTIFY_ACCESS_TOKEN).toString());
+                if(response.containsKey(AMConst.JSON_SPOTIFY_REFRESH_TOKEN)) {
+                    tokens.put(AMConst.JSON_SPOTIFY_REFRESH_TOKEN, response.get(AMConst.JSON_SPOTIFY_REFRESH_TOKEN).toString());
                 }
                 return tokens;
             }
@@ -56,7 +57,7 @@ public class SpotifyService {
     public Map getUserInfo(String accessToken) {
         try {
             return WebClient.builder()
-                .baseUrl("https://api.spotify.com/v1")
+                .baseUrl(AMConst.PATTERN_SPOTIFY_BASEURL_V1)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .build()
                 .get()
@@ -81,10 +82,10 @@ public class SpotifyService {
         }
         try {
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("device_ids", Collections.singletonList(deviceId));
+            requestBody.put(AMConst.JSON_SPOTIFY_DEVICE_IDS, Collections.singletonList(deviceId));
             //requestBody.put("play", true);
             HttpStatus status = (HttpStatus) webClient.put()
-                .uri("https://api.spotify.com/v1/me/player")
+                .uri(AMConst.PATTERN_SPOTIFY_BASEURL_PLAYER)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .bodyValue(requestBody)
@@ -102,8 +103,8 @@ public class SpotifyService {
     public Map getCurrentlyPlaying(String accessToken) {
         try {
             return webClient.get()
-                .uri("https://api.spotify.com/v1/me/player/currently-playing")
-                .header("Authorization", "Bearer " + accessToken)
+                .uri(AMConst.PATTERN_SPOTIFY_BASEURL_PLAYER + "/currently-playing")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, response ->
                         response.bodyToMono(String.class)
@@ -119,11 +120,11 @@ public class SpotifyService {
     public void play(String accessToken) {
         try {
             WebClient.builder()
-                .baseUrl("https://api.spotify.com/v1")
+                .baseUrl(AMConst.PATTERN_SPOTIFY_BASEURL_PLAYER)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .build()
                 .put()
-                .uri("/me/player/play")
+                .uri("/play")
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
@@ -135,11 +136,11 @@ public class SpotifyService {
     public void pause(String accessToken) {
         try {
             WebClient.builder()
-                .baseUrl("https://api.spotify.com/v1")
+                .baseUrl(AMConst.PATTERN_SPOTIFY_BASEURL_PLAYER)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .build()
                 .put()
-                .uri("/me/player/pause")
+                .uri("/pause")
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
@@ -152,8 +153,8 @@ public class SpotifyService {
     public void previousTrack(String accessToken) {
         try {
             webClient.post()
-                .uri("https://api.spotify.com/v1/me/player/previous")
-                .header("Authorization", "Bearer " + accessToken)
+                .uri(AMConst.PATTERN_SPOTIFY_BASEURL_PLAYER + "/previous")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .toBodilessEntity()
                 .block(); // Attendi la risposta
@@ -165,8 +166,8 @@ public class SpotifyService {
     public void nextTrack(String accessToken) {
         try {
             webClient.post()
-                .uri("https://api.spotify.com/v1/me/player/next")
-                .header("Authorization", "Bearer " + accessToken)
+                .uri(AMConst.PATTERN_SPOTIFY_BASEURL_PLAYER + "/next")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .toBodilessEntity()
                 .block();
@@ -178,11 +179,11 @@ public class SpotifyService {
     public Map getDevices(String accessToken) {
         try {
             return WebClient.builder()
-                .baseUrl("https://api.spotify.com/v1")
+                .baseUrl(AMConst.PATTERN_SPOTIFY_BASEURL_PLAYER)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .build()
                 .get()
-                .uri("/me/player/devices")
+                .uri("/devices")
                 .retrieve()
                 .bodyToMono(Map.class)
                 .block();
@@ -195,11 +196,11 @@ public class SpotifyService {
     public String getDevicesClient(String accessToken) {
         try {
             return WebClient.builder()
-                .baseUrl("https://api.spotify.com/v1")
+                .baseUrl(AMConst.PATTERN_SPOTIFY_BASEURL_PLAYER)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .build()
                 .get()
-                .uri("/me/player/devices")
+                .uri("/devices")
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -214,19 +215,19 @@ public class SpotifyService {
             Map<String, Object> requestBody = new HashMap<>();
             List<String> uris = new ArrayList<>();
             uris.add(trackURI);
-            if(session.getAttribute("queue") != null) {
-                List<String> queue = (List<String>) session.getAttribute("queue");
+            if(session.getAttribute(AMConst.SESSION_SPOTIFY_QUEUE) != null) {
+                List<String> queue = (List<String>) session.getAttribute(AMConst.SESSION_SPOTIFY_QUEUE);
                 uris.addAll(queue);
             }
             requestBody.put("uris", uris);
             requestBody.put("position_ms", 0);
             WebClient.builder()
-                .baseUrl("https://api.spotify.com/v1")
+                .baseUrl(AMConst.PATTERN_SPOTIFY_BASEURL_PLAYER)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build()
                 .put()
-                .uri("/me/player/play")
+                .uri("/play")
                 .bodyValue(requestBody)
                 .retrieve()
                 .bodyToMono(Void.class)
@@ -251,11 +252,11 @@ public class SpotifyService {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .block();
-            if (response != null && response.containsKey("access_token")) {
+            if (response != null && response.containsKey(AMConst.JSON_SPOTIFY_ACCESS_TOKEN)) {
                 Map<String, String> tokenData = new HashMap<>();
-                tokenData.put("access_token", response.get("access_token").toString());
-                if (response.containsKey("refresh_token")) {
-                    tokenData.put("refresh_token", response.get("refresh_token").toString());
+                tokenData.put("access_token", response.get(AMConst.JSON_SPOTIFY_ACCESS_TOKEN).toString());
+                if (response.containsKey(AMConst.JSON_SPOTIFY_REFRESH_TOKEN)) {
+                    tokenData.put("refresh_token", response.get(AMConst.JSON_SPOTIFY_REFRESH_TOKEN).toString());
                 }
                 return tokenData;
             }
@@ -268,11 +269,11 @@ public class SpotifyService {
     public Map getQueue(String accessToken) {
         try {
             return WebClient.builder()
-                .baseUrl("https://api.spotify.com/v1")
+                .baseUrl(AMConst.PATTERN_SPOTIFY_BASEURL_PLAYER)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .build()
                 .get()
-                .uri("/me/player/queue")
+                .uri("/queue")
                 .retrieve()
                 .bodyToMono(Map.class)
                 .block();
@@ -286,7 +287,7 @@ public class SpotifyService {
         String queryString = "/search" + "?q=" + query + "&type=track&limit=10";
         try {
             return WebClient.builder()
-                .baseUrl("https://api.spotify.com/v1")
+                .baseUrl(AMConst.PATTERN_SPOTIFY_BASEURL_V1)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .build()
                 .get()
@@ -305,19 +306,19 @@ public class SpotifyService {
             Map<String, Object> requestBody = new HashMap<>();
             List<String> uris = new ArrayList<>();
             uris.add(query);
-            if(session.getAttribute("queue") != null) {
-                List<String> queue = (List<String>) session.getAttribute("queue");
+            if(session.getAttribute(AMConst.SESSION_SPOTIFY_QUEUE) != null) {
+                List<String> queue = (List<String>) session.getAttribute(AMConst.SESSION_SPOTIFY_QUEUE);
                 uris.addAll(queue);
             }
             requestBody.put("uris", uris);
             requestBody.put("position_ms", 0);
             WebClient.builder()
-                .baseUrl("https://api.spotify.com/v1")
+                .baseUrl(AMConst.PATTERN_SPOTIFY_BASEURL_PLAYER)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build()
                 .put()
-                .uri("/me/player/play")
+                .uri("/play")
                 .bodyValue(requestBody)
                 .retrieve()
                 .bodyToMono(Void.class)

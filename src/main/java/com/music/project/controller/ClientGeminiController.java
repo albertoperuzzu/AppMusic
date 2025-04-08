@@ -1,5 +1,6 @@
 package com.music.project.controller;
 
+import com.music.project.constant.AMConst;
 import com.music.project.service.GeminiService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class ClientGeminiController {
 
     @PostMapping("/get_translation")
     public Mono<String> generatePrompt(HttpSession session) {
-        String lyrics = (String) session.getAttribute("current_lyrics");
+        String lyrics = (String) session.getAttribute(AMConst.SESSION_SPOTIFY_CURRENT_LYRICS);
         if(lyrics != null) {
             return geminiService.callGeminiPrompt(lyrics);
         }
