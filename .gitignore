@@ -12,6 +12,7 @@ target/
 /src/main/resources/application.properties
 /src/target
 /src/test
+/src/main/resources/credentials/googleService.json
 
 # Dipendenze scaricate da Maven
 .mvn/

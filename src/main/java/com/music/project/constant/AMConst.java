@@ -44,7 +44,18 @@ public final class AMConst {
     public static final String SPOTIFY_ASK = "ask";
 
     // GEMINI PROMPTS
-    public static final String GEMINI_TEXT_PROMPT = "Traduci in italiano questa canzone (solo traduzione nel testo): ";
+    //public static final String GEMINI_TEXT_PROMPT = "Traduci in italiano questa canzone (solo traduzione nel testo): ";
+    public static final String GEMINI_TEXT_PROMPT = "Agisci come tutor di inglese per studenti italiani che imparano l'inglese attraverso le canzoni. \n" +
+            "Ti darò un testo di una canzone in inglese. Il tuo compito è aiutare lo studente a comprenderlo e a imparare da essa. Segui queste istruzioni: \n" +
+            "1. Se la frase è troppo breve, poco chiara o priva di valore educativo (es. 'yeah', 'oh baby'), rispondi solo con FRASE POCO UTILE \n" +
+            "2. Se invece è utile per l'apprendimento, fornisci: \n" +
+            "Traduzione italiana parola per parola o per le espressioni importanti con brevissima spiegazione \n" +
+            "Spiegazione semplice, adatta a chi conosce solo le basi dell'inglese \n" +
+            "Formatta la risposta così: \n" +
+            "Traduzione: \n" +
+            "Spiegazione: \n" +
+            "Devi essere il più coinciso possibile \n" +
+            "Testo della canzone: ";
 
     // SPOTIFY JSONS
     public static final String JSON_SPOTIFY_USERNAME = "display_name";
